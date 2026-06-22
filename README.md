@@ -1,36 +1,139 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nexus — Life Management System
+
+A full-stack personal productivity app to manage **tasks**, **notes**, **calendar**, and **finances** in one place. Built with Next.js and Supabase for free deployment.
+
+## Features
+
+- **Dashboard** — Overview of tasks, events, and monthly finances
+- **Tasks** — Kanban (drag & drop), list, and calendar views with due dates
+- **Notes** — Create, pin, search, and edit notes
+- **Calendar** — Calendar and list views for scheduling events
+- **Finance** — Income/expense tracking, savings goals, and wallets (IDR)
+- **Settings** — Currency (Rupiah) and language (English) preferences
+- **Profile** — Avatar upload and personal info (top-right menu)
+- **Auth** — Email/password and Google (Gmail) sign-in via Supabase
+
+## Tech Stack
+
+- [Next.js 16](https://nextjs.org/) (App Router)
+- [Supabase](https://supabase.com/) (Auth, Database, Storage)
+- [Tailwind CSS 4](https://tailwindcss.com/)
+- [@dnd-kit](https://dndkit.com/) for Kanban drag & drop
+- TypeScript
 
 ## Getting Started
 
-First, run the development server:
+### 1. Clone and install
+
+```bash
+npm install
+```
+
+### 2. Set up Supabase (automated)
+
+1. Create a free project at [supabase.com](https://supabase.com)
+2. Run the automated setup script:
+
+```bash
+npm run supabase:setup
+```
+
+This will:
+- Log you into Supabase CLI (if needed)
+- Link your remote project
+- Push all database tables, RLS policies, and storage
+- Configure auth redirect URLs for local dev
+- Create `.env.local` with your API keys
+
+You only need your **Project Ref** (from the dashboard URL: `supabase.com/dashboard/project/<project-ref>`).
+
+**Security settings (recommended):**
+- Enable Data API — **ON**
+- Automatically expose new tables — **OFF**
+- Enable automatic RLS — **ON** (optional)
+
+The migration includes explicit API grants, so it works with auto-expose disabled.
+
+**Manual setup (alternative):** Run [`supabase/schema.sql`](supabase/schema.sql) in the SQL Editor.
+
+3. Enable **Google** provider under **Authentication → Providers** (optional)
+   - Add your Google OAuth Client ID/Secret from [Google Cloud Console](https://console.cloud.google.com/)
+   - Set redirect URL: `https://<your-project>.supabase.co/auth/v1/callback`
+4. Copy your project URL and anon key from **Project Settings → API** (if not using the script)
+
+### 3. Environment variables
+
+```bash
+cp .env.local.example .env.local
+```
+
+Fill in:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+```
+
+For Google OAuth, also add this redirect URL in Supabase **Authentication → URL Configuration**:
+
+```
+http://localhost:3000/auth/callback
+```
+
+(Add your production URL when deploying.)
+
+### 4. Run locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deploy for Free
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Vercel + Supabase
 
-## Learn More
+1. Push this repo to GitHub
+2. Import the repo in [Vercel](https://vercel.com)
+3. Add the same environment variables in Vercel project settings
+4. Add your Vercel URL to Supabase **Authentication → URL Configuration**:
+   - Site URL: `https://your-app.vercel.app`
+   - Redirect URLs: `https://your-app.vercel.app/auth/callback`
 
-To learn more about Next.js, take a look at the following resources:
+Supabase free tier includes auth, database, and storage — no credit card required.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/
+│   ├── (auth)/          # Login & register
+│   ├── (app)/           # Main app (sidebar layout)
+│   │   ├── dashboard/
+│   │   ├── tasks/
+│   │   ├── notes/
+│   │   ├── calendar/
+│   │   ├── finance/     # Income, savings, wallets
+│   │   ├── settings/
+│   │   └── profile/
+│   └── auth/callback/   # OAuth callback
+├── components/
+│   ├── layout/          # Sidebar, header, profile menu
+│   ├── tasks/           # Kanban, list, calendar views
+│   └── ui/              # Shared UI components
+├── lib/
+│   ├── supabase/        # Client, server, middleware
+│   └── currency.ts      # IDR formatting
+└── types/
+    └── database.ts
+```
 
-## Deploy on Vercel
+## Currency & Language
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- All monetary values use **Indonesian Rupiah (IDR)**
+- UI language is **English**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+MIT
