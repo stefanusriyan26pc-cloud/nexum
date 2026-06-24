@@ -1,6 +1,6 @@
 {
   "name": "nexus",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,6 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "supabase:setup": "bash scripts/setup-supabase.sh",
+    "auth:google": "bash scripts/setup-google-oauth.sh",
+    "auth:google:configure": "bash scripts/configure-google-oauth.sh",
     "supabase:push": "supabase db push",
     "supabase:link": "supabase link",
     "seed:mock": "node scripts/seed-mock-data.mjs"

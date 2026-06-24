@@ -67,7 +67,7 @@ export default function FinanceAnalyticsPage() {
 
   return (
     <FinancePageShell>
-      <main className="flex-1 overflow-y-auto p-6">
+      <main className="flex-1 overflow-y-auto p-4 sm:p-6">
         {loading ? (
           <div className="grid gap-4 lg:grid-cols-2">
             {Array.from({ length: 4 }).map((_, i) => (

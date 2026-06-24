@@ -18,7 +18,7 @@ export function FinanceTopbar() {
 
   return (
     <div className="border-b border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-950">
-      <div className="flex gap-1 px-6">
+      <div className="flex gap-1 overflow-x-auto px-4 sm:px-6">
         {financeTabs.map(({ href, key }) => {
           const isActive = pathname === href || pathname.startsWith(`${href}/`);
           return (
@@ -26,7 +26,7 @@ export function FinanceTopbar() {
               key={href}
               href={href}
               className={cn(
-                "relative px-4 py-3 text-sm font-medium transition-colors",
+                "relative shrink-0 whitespace-nowrap px-3 py-3 text-sm font-medium transition-colors sm:px-4",
                 isActive
                   ? "text-indigo-600 dark:text-indigo-400"
                   : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"

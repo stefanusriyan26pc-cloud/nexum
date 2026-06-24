@@ -76,7 +76,7 @@ export default function WalletsPage() {
         </Button>
       }
     >
-      <main className="flex-1 overflow-y-auto p-6">
+      <main className="flex-1 overflow-y-auto p-4 sm:p-6">
         <Card className="mb-6">
           <CardContent className="p-5">
             <p className="text-xs text-slate-500 dark:text-slate-400">{t("finance.totalBalance")}</p>

@@ -30,7 +30,11 @@
     "finance": "Keuangan",
     "settings": "Pengaturan",
     "tagline": "Sistem Manajemen Kehidupan",
-    "version": "Versi"
+    "version": "Versi",
+    "openMenu": "Buka menu",
+    "closeMenu": "Tutup menu",
+    "expandSidebar": "Perluas sidebar",
+    "collapseSidebar": "Ciutkan sidebar"
   },
   "financeNav": {
     "analytics": "Analitik",
@@ -86,6 +90,7 @@
     "incomeMonth": "Pemasukan (Bulan Ini)",
     "expensesMonth": "Pengeluaran (Bulan Ini)",
     "openTasks": "Tugas Terbuka",
+    "totalBalance": "Total Saldo",
     "netBalance": "Saldo Bersih",
     "upcomingTasks": "Tugas Mendatang",
     "upcomingEvents": "Acara Mendatang",

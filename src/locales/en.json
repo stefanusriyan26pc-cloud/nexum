@@ -30,7 +30,11 @@
     "finance": "Finance",
     "settings": "Settings",
     "tagline": "Life Management System",
-    "version": "Version"
+    "version": "Version",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "expandSidebar": "Expand sidebar",
+    "collapseSidebar": "Collapse sidebar"
   },
   "financeNav": {
     "analytics": "Analytics",
@@ -86,6 +90,7 @@
     "incomeMonth": "Income (This Month)",
     "expensesMonth": "Expenses (This Month)",
     "openTasks": "Open Tasks",
+    "totalBalance": "Total Balance",
     "netBalance": "Net Balance",
     "upcomingTasks": "Upcoming Tasks",
     "upcomingEvents": "Upcoming Events",

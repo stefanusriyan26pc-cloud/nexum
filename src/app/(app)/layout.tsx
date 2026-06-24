@@ -1,4 +1,4 @@
-import { Sidebar } from "@/components/layout/sidebar";
+import { AppShell } from "@/components/layout/app-shell";
 import { ProfileProvider } from "@/components/layout/profile-provider";
 import { LocaleSync } from "@/components/providers/locale-sync";
 import { createClient } from "@/lib/supabase/server";
@@ -27,10 +27,7 @@ export default async function AppLayout({
   return (
     <ProfileProvider profile={profile}>
       <LocaleSync language={profile?.language} />
-      <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-[#020617]">
-        <Sidebar />
-        <div className="flex flex-1 flex-col overflow-hidden">{children}</div>
-      </div>
+      <AppShell>{children}</AppShell>
     </ProfileProvider>
   );
 }

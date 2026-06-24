@@ -16,6 +16,11 @@ import {
   type TransactionTypeFilter,
 } from "@/lib/filters/transaction-filters";
 import { sumByType } from "@/lib/finance/analytics";
+import {
+  applyWalletDeltaLocally,
+  syncWalletForTransaction,
+  transactionWalletDelta,
+} from "@/lib/finance/wallets";
 import { formatRupiah, parseRupiahInput } from "@/lib/currency";
 import { createClient } from "@/lib/supabase/client";
 import type { FinanceTransaction, Wallet } from "@/types/database";
@@ -108,15 +113,13 @@ export default function IncomeExpensePage() {
 
     if (data) {
       setTransactions([data, ...transactions]);
-      if (form.wallet_id) {
-        const wallet = wallets.find((w) => w.id === form.wallet_id);
-        if (wallet) {
-          const delta = form.type === "income" ? amount : -amount;
-          await supabase
-            .from("wallets")
-            .update({ balance: Number(wallet.balance) + delta })
-            .eq("id", form.wallet_id);
-        }
+      const nextBalance = await syncWalletForTransaction(supabase, data);
+      if (data.wallet_id && nextBalance !== null) {
+        setWallets(
+          wallets.map((wallet) =>
+            wallet.id === data.wallet_id ? { ...wallet, balance: nextBalance } : wallet
+          )
+        );
       }
     }
 
@@ -133,9 +136,17 @@ export default function IncomeExpensePage() {
   };
 
   const deleteTx = async (id: string) => {
+    const tx = transactions.find((t) => t.id === id);
+    if (!tx) return;
+
     const supabase = createClient();
+    const nextBalance = await syncWalletForTransaction(supabase, tx, true);
     await supabase.from("finance_transactions").delete().eq("id", id);
+
     setTransactions(transactions.filter((t) => t.id !== id));
+    if (tx.wallet_id && nextBalance !== null) {
+      setWallets(applyWalletDeltaLocally(wallets, tx.wallet_id, transactionWalletDelta(tx, true)));
+    }
   };
 
   return (
@@ -147,7 +158,7 @@ export default function IncomeExpensePage() {
         </Button>
       }
     >
-      <main className="flex-1 overflow-y-auto p-6">
+      <main className="flex-1 overflow-y-auto p-4 sm:p-6">
         <div className="mb-6 space-y-4">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <FilterBar

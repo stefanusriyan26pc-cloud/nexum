@@ -6,16 +6,19 @@ import { useTranslation } from "@/components/providers/i18n-provider";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatRupiah } from "@/lib/currency";
+import { totalWalletBalance } from "@/lib/finance/wallets";
 import { createClient } from "@/lib/supabase/client";
 import type {
   CalendarEvent,
   FinanceTransaction,
   Task,
+  Wallet as WalletRecord,
 } from "@/types/database";
 import { format, isToday, isTomorrow, parseISO } from "date-fns";
 import {
   CalendarDays,
   CheckSquare,
+  Landmark,
   TrendingDown,
   TrendingUp,
   Wallet,
@@ -29,6 +32,7 @@ export default function DashboardPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [transactions, setTransactions] = useState<FinanceTransaction[]>([]);
+  const [wallets, setWallets] = useState<WalletRecord[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,7 +41,7 @@ export default function DashboardPage() {
       const now = new Date();
       const monthStart = format(now, "yyyy-MM-01");
 
-      const [tasksRes, eventsRes, txRes] = await Promise.all([
+      const [tasksRes, eventsRes, txRes, walletRes] = await Promise.all([
         supabase
           .from("tasks")
           .select("*")
@@ -55,11 +59,13 @@ export default function DashboardPage() {
           .select("*")
           .gte("transaction_date", monthStart)
           .order("transaction_date", { ascending: false }),
+        supabase.from("wallets").select("*"),
       ]);
 
       setTasks(tasksRes.data ?? []);
       setEvents(eventsRes.data ?? []);
       setTransactions(txRes.data ?? []);
+      setWallets(walletRes.data ?? []);
       setLoading(false);
     }
     load();
@@ -71,6 +77,7 @@ export default function DashboardPage() {
   const expense = transactions
     .filter((t) => t.type === "expense")
     .reduce((s, t) => s + Number(t.amount), 0);
+  const totalBalance = totalWalletBalance(wallets);
 
   const formatDue = (date: string | null) => {
     if (!date) return null;
@@ -93,16 +100,16 @@ export default function DashboardPage() {
         subtitle={`${t("dashboard.welcome")}${profile?.full_name ? `, ${profile.full_name.split(" ")[0]}` : ""}!`}
         profile={profile}
       />
-      <main className="flex-1 overflow-y-auto p-6">
+      <main className="flex-1 overflow-y-auto p-4 sm:p-6">
         {loading ? (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {Array.from({ length: 4 }).map((_, i) => (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            {Array.from({ length: 5 }).map((_, i) => (
               <div key={i} className="h-28 animate-pulse rounded-xl bg-slate-200 dark:bg-slate-800" />
             ))}
           </div>
         ) : (
           <>
-            <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
               <StatCard
                 icon={TrendingUp}
                 label={t("dashboard.incomeMonth")}
@@ -118,11 +125,18 @@ export default function DashboardPage() {
                 bg="bg-red-50 dark:bg-red-950/40"
               />
               <StatCard
+                icon={Landmark}
+                label={t("dashboard.totalBalance")}
+                value={formatRupiah(totalBalance)}
+                color="text-indigo-600 dark:text-indigo-400"
+                bg="bg-indigo-50 dark:bg-indigo-950/40"
+              />
+              <StatCard
                 icon={CheckSquare}
                 label={t("dashboard.openTasks")}
                 value={String(tasks.length)}
-                color="text-indigo-600 dark:text-indigo-400"
-                bg="bg-indigo-50 dark:bg-indigo-950/40"
+                color="text-violet-600 dark:text-violet-400"
+                bg="bg-violet-50 dark:bg-violet-950/40"
               />
               <StatCard
                 icon={Wallet}

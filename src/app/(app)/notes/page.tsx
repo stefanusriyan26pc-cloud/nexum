@@ -122,7 +122,7 @@ export default function NotesPage() {
           {t("notes.newNote")}
         </Button>
       </Header>
-      <main className="flex-1 overflow-y-auto p-6">
+      <main className="flex-1 overflow-y-auto p-4 sm:p-6">
         <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <ViewToggle
             views={[
