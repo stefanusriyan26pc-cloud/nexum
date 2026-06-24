@@ -78,7 +78,7 @@ export default function IncomeExpensePage() {
         supabase
           .from("finance_transactions")
           .select("*")
-          .order("transaction_date", { ascending: false }),
+          .order("created_at", { ascending: false }),
         supabase.from("wallets").select("*"),
       ]);
       setTransactions(txRes.data ?? []);
@@ -272,6 +272,8 @@ export default function IncomeExpensePage() {
                         </p>
                         <p className="text-xs text-slate-500 dark:text-slate-400">
                           {format(parseISO(tx.transaction_date), "MMM d, yyyy")}
+                          {" · "}
+                          {format(parseISO(tx.created_at), "h:mm a")}
                           {tx.category && ` · ${tx.category}`}
                         </p>
                       </div>

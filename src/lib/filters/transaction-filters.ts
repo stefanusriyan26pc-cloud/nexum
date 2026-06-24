@@ -50,18 +50,23 @@ export function filterTransactions(
 ): FinanceTransaction[] {
   const q = filters.search.trim().toLowerCase();
 
-  return transactions.filter((tx) => {
-    if (filters.type !== "all" && tx.type !== filters.type) return false;
-    if (filters.category !== "all" && (tx.category ?? "") !== filters.category) return false;
-    if (!inPeriod(tx.transaction_date, filters.period)) return false;
+  return transactions
+    .filter((tx) => {
+      if (filters.type !== "all" && tx.type !== filters.type) return false;
+      if (filters.category !== "all" && (tx.category ?? "") !== filters.category) return false;
+      if (!inPeriod(tx.transaction_date, filters.period)) return false;
 
-    if (q) {
-      const haystack = `${tx.description ?? ""} ${tx.category ?? ""}`.toLowerCase();
-      if (!haystack.includes(q)) return false;
-    }
+      if (q) {
+        const haystack = `${tx.description ?? ""} ${tx.category ?? ""}`.toLowerCase();
+        if (!haystack.includes(q)) return false;
+      }
 
-    return true;
-  });
+      return true;
+    })
+    .sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    );
 }
 
 export function getTransactionCategories(transactions: FinanceTransaction[]): string[] {
